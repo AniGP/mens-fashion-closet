@@ -1,16 +1,61 @@
-# React + Vite
+# Men's Fashion Closet
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A premium, digital wardrobe manager designed to help you organize your clothes and generate weather-appropriate outfits effortlessly.
 
-Currently, two official plugins are available:
+![Men's Fashion Closet Preview](./screenshot_preview.png)
+*(Note: Screenshot to be added by user)*
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- **Digital Inventory**: Organize your wardrobe into categories (Tops, Bottoms, Outerwear, Footwear) with a sleek, responsive grid layout.
+- **Outfit Generator**: Get a "Look of the Day" generated from your closet. The generator smartly pairs items based on category and style.
+- **Weather Integration**: 
+  - Real-time weather fetching using your location (via [Open-Meteo](https://open-meteo.com/)).
+  - Smart Outfit Filtering: Suggests layers for cold weather and avoids heavy fabrics in the heat.
+  - Displays temperature in both Celsius (°C) and Fahrenheit (°F) along with rain probability.
+- **Add Item Workflow**: 
+  - Upload photos of your own clothes.
+  - Tag items with customizable "Vibes" (Casual, Formal, Business, etc.).
+  - Select item colors to visualize your wardrobe palette.
+- **Data Persistence**: Your closet data is saved locally in your browser, so you don't lose your items on refresh.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+This project is built with a modern, performance-focused stack:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Frontend Framework**: [React](https://react.dev/) (v19)
+- **Build Tool**: [Vite](https://vitejs.dev/) - For lightning-fast development and building.
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) - Using the latest engine for zero-runtime overhead and a custom "Dark Slate & Cream" theme.
+- **Icons**: [Lucide React](https://lucide.dev/) - Clean, consistent iconography.
+- **Weather API**: [Open-Meteo](https://open-meteo.com/) - Free, open-source weather API (no API key required).
+
+## Getting Started
+
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/AniGP/mens-fashion-closet.git
+    cd mens-fashion-closet
+    ```
+
+2.  **Install dependencies**
+    ```bash
+    npm install
+    ```
+
+3.  **Run the development server**
+    ```bash
+    npm run dev
+    ```
+
+4.  **Open in Browser**
+    Navigate to `http://localhost:5173` to view the app.
+
+## Project Structure
+
+- `src/components/`: Contains functional components (Inventory, OutfitGenerator, AddItemForm).
+- `src/App.jsx`: Main application logic and state management.
+- `src/index.css`: Global styles and Tailwind configuration.
+
+## License
+
+MIT
