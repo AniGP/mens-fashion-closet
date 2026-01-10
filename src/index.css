@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream-50: #FDFBF7;
+  --color-cream-100: #F9F6F0;
+  --color-cream-200: #F1E9DA;
+  --color-cream-400: #F5E6CC;
+  /* Adding bits for completeness */
+  --color-cream-DEFAULT: #F5F5DC;
+
+  --color-slate-850: #172033;
+
+  --font-sans: "Inter", sans-serif;
+}
+
+body {
+  @apply bg-slate-950 text-cream-100;
+}
