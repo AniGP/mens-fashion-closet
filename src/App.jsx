@@ -4,14 +4,14 @@ import OutfitGenerator from './components/OutfitGenerator';
 import AddItemForm from './components/AddItemForm';
 
 const MOCK_DATA = [
-  { id: '1', name: 'Classic White Tee', category: 'Tops', vibe: 'Casual' },
-  { id: '2', name: 'Dark Wash Denim', category: 'Bottoms', vibe: 'Casual' },
-  { id: '3', name: 'Minimalist White Sneakers', category: 'Footwear', vibe: 'Casual' },
-  { id: '4', name: 'Navy Wool Blazer', category: 'Outerwear', vibe: 'Formal' },
-  { id: '5', name: 'Black Turtleneck', category: 'Tops', vibe: 'Formal' },
-  { id: '6', name: 'Chino Trousers', category: 'Bottoms', vibe: 'Business' },
-  { id: '7', name: 'Chelsea Boots', category: 'Footwear', vibe: 'Formal' },
-  { id: '8', name: 'Denim Jacket', category: 'Outerwear', vibe: 'Casual' },
+  { id: '1', name: 'Classic White Tee', category: 'Tops', vibe: 'Casual', color: 'White' },
+  { id: '2', name: 'Dark Wash Denim', category: 'Bottoms', vibe: 'Casual', color: 'Navy' },
+  { id: '3', name: 'Minimalist White Sneakers', category: 'Footwear', vibe: 'Casual', color: 'White' },
+  { id: '4', name: 'Navy Wool Blazer', category: 'Outerwear', vibe: 'Formal', color: 'Navy' },
+  { id: '5', name: 'Black Turtleneck', category: 'Tops', vibe: 'Formal', color: 'Black' },
+  { id: '6', name: 'Chino Trousers', category: 'Bottoms', vibe: 'Business', color: 'Beige' },
+  { id: '7', name: 'Chelsea Boots', category: 'Footwear', vibe: 'Formal', color: 'Black' },
+  { id: '8', name: 'Denim Jacket', category: 'Outerwear', vibe: 'Casual', color: 'Blue' },
 ];
 
 function App() {

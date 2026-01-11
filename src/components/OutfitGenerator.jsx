@@ -8,60 +8,97 @@ const CATEGORIES = {
     'Footwear': Footprints
 };
 
+import { filterCompatibleItems } from '../utils/fashionLogic';
+
 export default function OutfitGenerator({ items }) {
     const [outfit, setOutfit] = useState(null);
     const [weather, setWeather] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Helper to determine item warmth/suitability
+    // ... (keep isSuitableForWeather helper as is, or move it? Let's keep it here for now as it uses local helper vars)
     const isSuitableForWeather = (item, temp) => {
         const name = item.name.toLowerCase();
+        const category = item.category;
+
+        // Extended logic for "Bottoms" in heat
+        if (category === 'Bottoms') {
+            if (temp > 25 && (name.includes('jean') || name.includes('wool') || name.includes('heavy'))) return false;
+        }
+
         const isCold = temp < 15;
         const isHot = temp > 22;
 
         if (isCold) {
-            // In cold weather, avoid shorts/linen
             if (name.includes('shorts') || name.includes('linen') || name.includes('sandal')) return false;
             return true;
         }
         if (isHot) {
-            // In hot weather, avoid heavy items
             if (name.includes('wool') || name.includes('coat') || name.includes('heavy') || name.includes('boot') || name.includes('jacket') || name.includes('turtleneck')) return false;
             return true;
         }
-        // Mild weather - most things go
         return true;
     };
 
     const generateOutfit = () => {
-        const categories = ['Tops', 'Bottoms', 'Footwear', 'Outerwear'];
         const newOutfit = {};
-
-        // Default to mild if weather failed
         const currentTemp = weather ? weather.temperature : 20;
 
-        categories.forEach(cat => {
-            let filteredItems = items.filter(i => i.category === cat);
+        // 1. Select TOP first (The Anchor)
+        const tops = items.filter(i => i.category === 'Tops' && isSuitableForWeather(i, currentTemp));
+        if (tops.length === 0) {
+            // No weather appropriate tops? Fallback to all tops
+            // Or handle empty state. Let's try filtered first.
+        }
 
-            // Apply weather filtering
-            if (items.length > 0) {
-                const weatherItems = filteredItems.filter(i => isSuitableForWeather(i, currentTemp));
-                // If we have items that match the weather, use them. Otherwise fallback to all items in category (don't return naked)
-                if (weatherItems.length > 0) {
-                    filteredItems = weatherItems;
-                }
-            }
+        const availableTops = tops.length > 0 ? tops : items.filter(i => i.category === 'Tops');
 
-            // Special logic for Outerwear: skip it if it's hot
-            if (cat === 'Outerwear' && currentTemp > 24) {
-                // 20% chance of adding light layer in heat, otherwise skip
-                if (Math.random() > 0.2) return;
-            }
+        if (availableTops.length > 0) {
+            newOutfit['Tops'] = availableTops[Math.floor(Math.random() * availableTops.length)];
+        }
 
-            if (filteredItems.length > 0) {
-                newOutfit[cat] = filteredItems[Math.floor(Math.random() * filteredItems.length)];
+        const anchorItem = newOutfit['Tops'];
+
+        // 2. Select BOTTOM (Match with Top)
+        let bottoms = items.filter(i => i.category === 'Bottoms' && isSuitableForWeather(i, currentTemp));
+        if (bottoms.length === 0) bottoms = items.filter(i => i.category === 'Bottoms'); // Fallback
+
+        if (anchorItem && bottoms.length > 0) {
+            const compatibleBottoms = filterCompatibleItems(anchorItem, bottoms);
+            newOutfit['Bottoms'] = compatibleBottoms[Math.floor(Math.random() * compatibleBottoms.length)];
+        } else if (bottoms.length > 0) {
+            newOutfit['Bottoms'] = bottoms[Math.floor(Math.random() * bottoms.length)];
+        }
+
+        // 3. Select FOOTWEAR (Match with Bottoms preferred, or Top)
+        let footwear = items.filter(i => i.category === 'Footwear' && isSuitableForWeather(i, currentTemp));
+        if (footwear.length === 0) footwear = items.filter(i => i.category === 'Footwear');
+
+        const bottomItem = newOutfit['Bottoms'];
+        const footwearAnchor = bottomItem || anchorItem; // Prefer matching pants, else match top
+
+        if (footwearAnchor && footwear.length > 0) {
+            const compatibleFootwear = filterCompatibleItems(footwearAnchor, footwear);
+            newOutfit['Footwear'] = compatibleFootwear[Math.floor(Math.random() * compatibleFootwear.length)];
+        } else if (footwear.length > 0) {
+            newOutfit['Footwear'] = footwear[Math.floor(Math.random() * footwear.length)];
+        }
+
+        // 4. Select OUTERWEAR (If needed)
+        // Only if temp < 20 or random chance in 20-24 range
+        const needsLayer = currentTemp < 20 || (currentTemp <= 24 && Math.random() > 0.7);
+
+        if (needsLayer) {
+            let outerwear = items.filter(i => i.category === 'Outerwear' && isSuitableForWeather(i, currentTemp));
+            if (outerwear.length === 0 && currentTemp < 15) outerwear = items.filter(i => i.category === 'Outerwear'); // Force layer if cold
+
+            if (outerwear.length > 0) {
+                // Match with Bottoms usually creates a nice silhouette, or Top for contrast. 
+                // Actually, matching Top is safer for "Twinset" look, matching Bottom is "Suit" look.
+                // Let's use Top as anchor for color coherence.
+                const compatibleOuterwear = anchorItem ? filterCompatibleItems(anchorItem, outerwear) : outerwear;
+                newOutfit['Outerwear'] = compatibleOuterwear[Math.floor(Math.random() * compatibleOuterwear.length)];
             }
-        });
+        }
 
         setOutfit(newOutfit);
     };
