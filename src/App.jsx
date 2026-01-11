@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Inventory from './components/Inventory';
 import OutfitGenerator from './components/OutfitGenerator';
 import AddItemForm from './components/AddItemForm';
+import SavedOutfits from './components/SavedOutfits';
 
 const MOCK_DATA = [
   { id: '1', name: 'Classic White Tee', category: 'Tops', vibe: 'Casual', color: 'White' },
@@ -21,9 +22,18 @@ function App() {
     return saved ? JSON.parse(saved) : MOCK_DATA;
   });
 
+  const [savedOutfits, setSavedOutfits] = useState(() => {
+    const saved = localStorage.getItem('savedOutfits');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   useEffect(() => {
     localStorage.setItem('closetItems', JSON.stringify(items));
   }, [items]);
+
+  useEffect(() => {
+    localStorage.setItem('savedOutfits', JSON.stringify(savedOutfits));
+  }, [savedOutfits]);
 
   const handleAddItem = (newItem) => {
     const item = { ...newItem, id: Date.now().toString() };
@@ -32,6 +42,20 @@ function App() {
 
   const handleDeleteItem = (id) => {
     setItems(items.filter(i => i.id !== id));
+  };
+
+  const handleSaveOutfit = (outfit) => {
+    if (!outfit) return;
+    const newOutfit = {
+      id: Date.now().toString(),
+      date: new Date().toISOString(),
+      items: outfit
+    };
+    setSavedOutfits([newOutfit, ...savedOutfits]);
+  };
+
+  const handleDeleteOutfit = (id) => {
+    setSavedOutfits(savedOutfits.filter(o => o.id !== id));
   };
 
   return (
@@ -50,7 +74,9 @@ function App() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 py-8">
-        <OutfitGenerator items={items} />
+        <OutfitGenerator items={items} onSave={handleSaveOutfit} />
+
+        <SavedOutfits outfits={savedOutfits} onDelete={handleDeleteOutfit} />
 
         <div className="mt-12">
           <h2 className="text-lg font-light text-slate-400 mb-6 uppercase tracking-widest border-l-2 border-cream-100 pl-3">

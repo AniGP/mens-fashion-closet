@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, Shirt, Layers, PersonStanding, Footprints, Cloud, Sun, Thermometer, Loader2 } from 'lucide-react';
+import { RefreshCw, Shirt, Layers, PersonStanding, Footprints, Cloud, Sun, Thermometer, Loader2, Heart } from 'lucide-react';
 
 const CATEGORIES = {
     'Tops': Shirt,
@@ -10,7 +10,7 @@ const CATEGORIES = {
 
 import { filterCompatibleItems } from '../utils/fashionLogic';
 
-export default function OutfitGenerator({ items }) {
+export default function OutfitGenerator({ items, onSave }) {
     const [outfit, setOutfit] = useState(null);
     const [weather, setWeather] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -175,13 +175,24 @@ export default function OutfitGenerator({ items }) {
                     {!weather && !loading && <div className="text-slate-500 text-xs mt-1">Weather unavailable (using default)</div>}
                 </div>
 
-                <button
-                    onClick={generateOutfit}
-                    className="flex items-center gap-2 bg-cream-100 text-slate-950 px-4 py-2 rounded hover:bg-white transition-colors text-sm font-medium shadow-lg shadow-cream-100/10 z-10"
-                >
-                    <RefreshCw size={16} />
-                    Shuffle
-                </button>
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => onSave(outfit)}
+                        disabled={!outfit}
+                        className="flex items-center gap-2 bg-slate-800 text-cream-100 px-4 py-2 rounded hover:bg-slate-700 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                        title="Save to Lookbook"
+                    >
+                        <Heart size={16} />
+                        <span className="hidden sm:inline">Save</span>
+                    </button>
+                    <button
+                        onClick={generateOutfit}
+                        className="flex items-center gap-2 bg-cream-100 text-slate-950 px-4 py-2 rounded hover:bg-white transition-colors text-sm font-medium shadow-lg shadow-cream-100/10 z-10"
+                    >
+                        <RefreshCw size={16} />
+                        Shuffle
+                    </button>
+                </div>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 z-10 relative">
