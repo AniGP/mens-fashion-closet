@@ -79,12 +79,12 @@
         return true;
     }
 
-    async function generateOutfit() {
+    async function generateOutfit(useAI: boolean = false) {
         generating = true;
         aiError = null;
 
         try {
-            if (apiKey) {
+            if (useAI && apiKey) {
                 // AI Generation
                 outfit = await generateOutfitAI(items, weather, apiKey);
             } else {
@@ -242,7 +242,7 @@
     $effect(() => {
         // If mock data loads and we haven't generated, generate.
         if (!outfit && items.length > 0 && !loading) {
-            generateOutfit();
+            generateOutfit(false);
         }
     });
 
@@ -250,7 +250,7 @@
         // Regenerate if API key changes (optional, but good UX)
         // Only do this if we have items and aren't already generating
         if (apiKey && items.length > 0 && !generating && !outfit) {
-            generateOutfit();
+            generateOutfit(true);
         }
     });
 </script>
@@ -315,23 +315,38 @@
             </button>
 
             <button
-                onclick={generateOutfit}
+                onclick={() => generateOutfit(false)}
                 disabled={generating}
-                class={`flex items-center gap-2 px-4 py-2 rounded transition-all text-sm font-medium shadow-lg z-10 ${
-                    apiKey
-                        ? "bg-indigo-600 text-white hover:bg-indigo-500 shadow-indigo-900/40"
-                        : "bg-cream-100 text-slate-950 hover:bg-white shadow-cream-100/10"
-                }`}
+                class="flex items-center gap-2 px-4 py-2 rounded transition-all text-sm font-medium shadow-lg z-10 bg-cream-100 text-slate-950 hover:bg-white shadow-cream-100/10"
+                title="Standard Algorithmic Shuffle"
             >
-                {#if generating}
+                {#if generating && !apiKey}
                     <Loader2 size={16} class="animate-spin" />
-                    {apiKey ? "AI Styling..." : "Shuffling..."}
-                {:else if apiKey}
-                    <Sparkles size={16} />
-                    AI Style Me
+                    Shuffling...
                 {:else}
                     <RefreshCw size={16} />
                     Shuffle
+                {/if}
+            </button>
+
+            <button
+                onclick={() => generateOutfit(true)}
+                disabled={generating || !apiKey}
+                class={`flex items-center gap-2 px-4 py-2 rounded transition-all text-sm font-medium shadow-lg z-10 ${
+                    apiKey
+                        ? "bg-indigo-600 text-white hover:bg-indigo-500 shadow-indigo-900/40"
+                        : "bg-indigo-600/50 text-white/50 cursor-not-allowed"
+                }`}
+                title={apiKey
+                    ? "Generate outfit using AI"
+                    : "Enter a Gemini API Key in Settings to enable AI Style"}
+            >
+                {#if generating && apiKey}
+                    <Loader2 size={16} class="animate-spin" />
+                    AI Styling...
+                {:else}
+                    <Sparkles size={16} />
+                    AI Style Me
                 {/if}
             </button>
         </div>
