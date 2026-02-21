@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { X, Save, Key, Trash2 } from "lucide-svelte";
+    import { X, Save, Key, Trash2, Eye, EyeOff } from "lucide-svelte";
 
     interface Props {
         isOpen: boolean;
@@ -10,10 +10,14 @@
 
     let { isOpen, onClose, apiKey, onSaveKey }: Props = $props();
 
-    let inputKey = $state(apiKey);
+    let inputKey = $state("");
+    let showKey = $state(false);
 
     $effect(() => {
-        inputKey = apiKey;
+        if (isOpen) {
+            inputKey = apiKey;
+            showKey = false;
+        }
     });
 
     function handleSave() {
@@ -51,15 +55,30 @@
             <div class="space-y-4">
                 <div>
                     <label
+                        for="api-key-input"
                         class="block text-xs uppercase tracking-wider text-slate-400 mb-1"
                         >Gemini API Key</label
                     >
-                    <input
-                        type="password"
-                        bind:value={inputKey}
-                        placeholder="AIzaSy..."
-                        class="w-full bg-slate-950 border border-slate-800 rounded p-3 text-cream-50 focus:outline-none focus:border-indigo-500/50 transition-colors placeholder:text-slate-700 font-mono text-sm"
-                    />
+                    <div class="relative">
+                        <input
+                            id="api-key-input"
+                            type={showKey ? "text" : "password"}
+                            bind:value={inputKey}
+                            placeholder="AIzaSy..."
+                            class="w-full bg-slate-950 border border-slate-800 rounded p-3 pr-10 text-cream-50 focus:outline-none focus:border-indigo-500/50 transition-colors placeholder:text-slate-700 font-mono text-sm"
+                        />
+                        <button
+                            type="button"
+                            onclick={() => (showKey = !showKey)}
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                        >
+                            {#if showKey}
+                                <EyeOff size={16} />
+                            {:else}
+                                <Eye size={16} />
+                            {/if}
+                        </button>
+                    </div>
                     <p class="text-[10px] text-slate-500 mt-2">
                         Your key is stored locally in your browser. Get one at <a
                             href="https://aistudio.google.com/app/apikey"
